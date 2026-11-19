@@ -374,8 +374,8 @@
   const ARM = 30; // upper + lower arm length (local units)
   const lerp2 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t)];
 
-  function soldier({ hip, shoulder, head, legs, boots, facing }) {
-    const g = mk('g', {});
+  function soldier({ hip, shoulder, head, legs, boots, facing, name, captain }) {
+    const g = mk('g', { class: captain ? 'trooper captain' : 'trooper' });
     const backArm = mk('path', { fill: 'none', stroke: C.uniDark, 'stroke-width': 6.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
     const backHand = mk('circle', { r: 3.3, fill: C.skin }, g);
     mk('path', { d: legs, fill: 'none', stroke: C.uniDark, 'stroke-width': 8.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
@@ -390,6 +390,22 @@
     mk('path', { d: `M${hx - 6} ${hy - 11} Q${hx} ${hy - 13.5} ${hx + 5} ${hy - 11}`, fill: 'none', stroke: C.helmetHi, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
     const frontArm = mk('path', { fill: 'none', stroke: C.uni, 'stroke-width': 6.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
     const frontHand = mk('circle', { r: 3.3, fill: C.skin }, g);
+    // hover target fills the gaps between strokes
+    mk('rect', { x: hx - 18, y: hy - 18, width: 40, height: 78, fill: 'transparent' }, g);
+    if (name) {
+      const plate = mk('g', { class: 'nameplate' }, g);
+      const w = Math.max(46, name.length * 5.1);
+      mk('rect', {
+        x: hx - w / 2, y: hy - 30, width: w, height: 12, rx: 1.4,
+        fill: '#f7f1e2', stroke: '#39432a', 'stroke-width': 0.7,
+      }, plate);
+      const label = mk('text', {
+        x: hx, y: hy - 21.2, 'text-anchor': 'middle',
+        'font-size': 7.4, 'font-family': 'Special Elite, Courier New, monospace',
+        fill: '#2b2a24',
+      }, plate);
+      label.textContent = name;
+    }
     return { g, shoulder, backArm, backHand, frontArm, frontHand };
   }
 
@@ -436,14 +452,17 @@
   const loader = soldier({
     hip: [-31, -27], shoulder: [-29, -49], head: [-27, -59], facing: 1,
     legs: 'M-31 -27 L-37 -2 M-31 -27 L-24 -2', boots: [[-39, -2], [-22, -2]],
+    name: 'Pvt Oki',
   });
   const gunner = soldier({
     hip: [30, -20], shoulder: [25, -42], head: [21, -52], facing: -1,
     legs: 'M30 -20 L17 -18 L17 -2 M30 -20 L36 -3 L50 -3', boots: [[14, -2], [52, -3]],
+    name: 'Pvt Sledge',
   });
   const spotter = soldier({
     hip: [94, -20], shoulder: [90, -42], head: [87, -53], facing: -1,
     legs: 'M94 -20 L81 -18 L81 -2 M94 -20 L100 -3 L114 -3', boots: [[78, -2], [116, -3]],
+    name: 'Cpt Rooney', captain: true,
   });
   const binos = mk('g', {});
   mk('rect', { x: -6, y: -3.2, width: 12, height: 3, rx: 1.2, fill: '#2f3226' }, binos);
@@ -508,11 +527,11 @@
     await tween(quick(320), (k) => { M.cheer = 1 - k; renderSquad(); });
   }
 
-  async function fireMortar() {
+  async function fireMortar(targetOverride, battleShot) {
     if (M.busy) return;
     M.busy = true;
 
-    const target = { x: W * rand(0.1, 0.9), y: H * rand(0.12, 0.4) };
+    const target = targetOverride || { x: W * rand(0.1, 0.9), y: H * rand(0.12, 0.4) };
     const base = center(mortarBase);
     const wantAng = clamp(((target.x - base.x) / W) * 70, -28, 28);
     const fromAng = M.ang;
@@ -550,7 +569,10 @@
       p1: { x: lerp(m.x, target.x, 0.5), y: Math.min(m.y, target.y) - H * 0.55 },
       p2: target,
       t: 0, dur: reduceMotion ? 0.5 : 1.05, trail: [],
-      onHit: () => { scoreSmile(); cheer(); },
+      onHit: () => {
+        if (battleShot) resolveSplash(target);
+        else { scoreSmile(); cheer(); }
+      },
     });
 
     // crew relaxes and fetches the next round
@@ -560,8 +582,141 @@
     M.busy = false;
   }
 
-  btn.addEventListener('click', fireMortar);
-  tank.addEventListener('click', fire);
+  btn.addEventListener('click', () => { if (!battle) fireMortar(); });
+  tank.addEventListener('click', () => { if (!battle) fire(); });
+
+  // ---------- names, and Cpt Rooney's flank ----------
+  const beach = document.querySelector('.scene svg');
+  const hostilesEl = $('hostiles');
+  const dispatch = document.querySelector('.dispatch');
+  const VB0 = { x: 0, y: 0, w: 1600, h: 900 };
+  const VB1 = { x: 820, y: 40, w: 1960, h: 1102 };
+  let cam = { ...VB0 };
+  let battle = null;
+  let finishing = false;
+  const SPLASH = 118;
+
+  const applyCam = () => beach.setAttribute('viewBox', `${cam.x.toFixed(1)} ${cam.y.toFixed(1)} ${cam.w.toFixed(1)} ${cam.h.toFixed(1)}`);
+  function svgPoint(x, y) {
+    const pt = beach.createSVGPoint();
+    pt.x = x; pt.y = y;
+    return pt.matrixTransform(beach.getScreenCTM());
+  }
+
+  // ground beyond the original frame, so the pull-back has somewhere to go
+  mk('rect', { x: 1590, y: 0, width: 1400, height: 470, fill: '#aeb8b4' }, hostilesEl);
+  mk('rect', { x: 1590, y: 466, width: 1400, height: 250, fill: '#4f6b75' }, hostilesEl);
+  mk('path', { d: 'M1500 900 L1600 748 L3000 700 L3000 980 L1500 980 Z', fill: '#cbb892' }, hostilesEl);
+  mk('path', { d: 'M1760 760 C1960 688 2200 676 2460 712 L2460 790 C2180 760 1960 776 1760 820 Z', fill: '#b7a47a' }, hostilesEl);
+  const hint = mk('text', {
+    x: 2080, y: 630, 'text-anchor': 'middle',
+    'font-family': 'Black Ops One, Impact, sans-serif', 'font-size': 26,
+    fill: '#f4efe2', stroke: '#2c2a24', 'stroke-width': 0.8,
+  }, hostilesEl);
+  hint.textContent = 'CLICK TO FIRE';
+
+  function makeFoe(x, y) {
+    const g = mk('g', { transform: `translate(${x} ${y})` }, hostilesEl);
+    mk('line', { x1: 0, y1: -2, x2: -1, y2: -22, stroke: '#6d6452', 'stroke-width': 13, 'stroke-linecap': 'round' }, g);
+    mk('line', { x1: -1, y1: -16, x2: -14, y2: -8, stroke: '#5c5546', 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+    mk('line', { x1: -1, y1: -16, x2: 10, y2: -12, stroke: '#5c5546', 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+    mk('circle', { cx: 0, cy: -30, r: 6.2, fill: '#c9956c' }, g);
+    mk('path', { d: 'M-11 -30 Q-11 -42 0 -42 Q11 -42 11 -30 Z', fill: '#5c4b36' }, g);
+    mk('line', { x1: -13, y1: -30, x2: 13, y2: -30, stroke: '#5c4b36', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, g);
+    mk('line', { x1: 2, y1: -20, x2: -24, y2: -26, stroke: '#2c2924', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, g);
+    return { g, x, home: x, y0: y, alive: true, running: false, phase: rand(0, 6.2), base: rand(1.7, 2.4), span: rand(34, 64) };
+  }
+  const foes = [1900, 1995, 2080, 2175, 2285].map((x, i) => makeFoe(x, 768 + (i % 2) * 6));
+  const bags = mk('g', {}, hostilesEl);
+  for (let i = 0; i < 24; i++) {
+    mk('ellipse', {
+      cx: 1852 + i * 18, cy: 784 + (i % 2) * 5, rx: 12, ry: 6.5,
+      fill: i % 2 ? '#c6b08a' : '#ad9670', stroke: '#8d7756', 'stroke-width': 0.7,
+    }, bags);
+  }
+
+  function resetFoes() {
+    foes.forEach((f) => {
+      f.alive = true; f.running = false; f.x = f.home;
+      f.g.setAttribute('opacity', '1');
+      f.g.setAttribute('transform', `translate(${f.home} ${f.y0})`);
+    });
+  }
+  function downFoe(f) {
+    f.alive = false; f.running = false;
+    f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y0 + 10}) rotate(76)`);
+    f.g.setAttribute('opacity', '0.5');
+  }
+  function updateFoes(now) {
+    const t = now / 1000;
+    const heat = Math.min(1, Math.max(0, t - battle.tPlay) / 9);
+    foes.forEach((f) => {
+      if (!f.alive || !f.running) return;
+      const sp = f.base * (1 + heat * 2.1);
+      const w = f.span * (1 + heat * 0.45);
+      f.x = f.home + Math.sin(t * sp + f.phase) * w;
+      f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y0})`);
+    });
+  }
+  function resolveSplash(at) {
+    if (!battle || battle.phase === 'out') return;
+    foes.forEach((f) => {
+      if (!f.alive) return;
+      const p = svgPoint(f.x, f.y0 - 26);
+      if (Math.hypot(p.x - at.x, p.y - at.y) <= SPLASH) downFoe(f);
+    });
+    if (battle.first) {
+      battle.first = false;
+      battle.phase = 'play';
+      battle.tPlay = performance.now() / 1000;
+      foes.forEach((f) => { if (f.alive) f.running = true; });
+    }
+    if (foes.every((f) => !f.alive)) finishEgg();
+  }
+  async function goCam(to, ms) {
+    const from = { ...cam };
+    await tween(ms, (k) => {
+      cam.x = lerp(from.x, to.x, k);
+      cam.y = lerp(from.y, to.y, k);
+      cam.w = lerp(from.w, to.w, k);
+      cam.h = lerp(from.h, to.h, k);
+      applyCam();
+    });
+  }
+  async function startEgg() {
+    if (battle) return;
+    battle = { phase: 'in', first: true, tPlay: 0 };
+    dispatch.classList.add('aside');
+    document.body.classList.add('skirmish');
+    resetFoes();
+    await goCam(VB1, quick(1200));
+    while (M.busy) await wait(40);
+    const mid = svgPoint(2080, 742);
+    await fireMortar(mid, true);
+  }
+  async function finishEgg() {
+    if (finishing) return;
+    finishing = true;
+    if (battle) battle.phase = 'out';
+    await wait(quick(900));
+    await goCam(VB0, quick(1100));
+    dispatch.classList.remove('aside');
+    document.body.classList.remove('skirmish');
+    resetFoes();
+    battle = null;
+    finishing = false;
+  }
+  spotter.g.addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    startEgg();
+  });
+  window.addEventListener('click', (e) => {
+    if (!battle || battle.phase !== 'play') return;
+    const t = e.target;
+    if (t.closest && t.closest('.dispatch, .trooper, #fire')) return;
+    fireMortar({ x: e.clientX, y: e.clientY }, true);
+  });
 
   // ---------- main loop ----------
   const t0 = performance.now();
@@ -573,6 +728,7 @@
     last = now;
     scene((now - t0) / 1000 + skip);
     updateFx(dt, now);
+    if (battle && battle.phase === 'play') updateFoes(now);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
