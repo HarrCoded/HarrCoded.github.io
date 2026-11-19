@@ -1,0 +1,230 @@
+/* The Digital Beachhead */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #b6b6ab;
+}
+
+body {
+  font-family: "Special Elite", "Courier New", Courier, monospace;
+  color: #2b2a24;
+  overflow-x: hidden;
+}
+
+/* ---------- Scene ---------- */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.scene svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#fx {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.clouds-slow { animation: drift 90s linear infinite alternate; }
+.clouds-fast { animation: drift 55s linear infinite alternate-reverse; }
+@keyframes drift { from { transform: translateX(-60px); } to { transform: translateX(80px); } }
+
+.balloon { animation: bob 7s ease-in-out infinite alternate; }
+.balloon.b2 { animation-duration: 9s; }
+@keyframes bob { from { transform: translateY(-4px); } to { transform: translateY(5px); } }
+
+.swell { animation: swell 6s ease-in-out infinite alternate; }
+.swell-b { animation-duration: 8s; animation-direction: alternate-reverse; }
+@keyframes swell { from { transform: translateX(-18px); } to { transform: translateX(18px); } }
+
+.foam { stroke-dasharray: 60 22; animation: foam 4s linear infinite; }
+.foam-b { stroke-dasharray: 34 30; animation-duration: 6s; animation-direction: reverse; }
+.foam-c { stroke-dasharray: 80 40; animation-duration: 7s; }
+@keyframes foam { to { stroke-dashoffset: -164; } }
+
+.flag { transform-box: fill-box; transform-origin: left center; animation: flap .9s ease-in-out infinite alternate; }
+@keyframes flap { from { transform: scaleX(1) skewY(-4deg); } to { transform: scaleX(.8) skewY(5deg); } }
+
+#tank { cursor: pointer; }
+.scene { pointer-events: none; }
+.scene #tank { pointer-events: auto; }
+
+.wheel > * { transform-box: fill-box; transform-origin: center; }
+#tank.moving .wheel > path { animation: spin .45s linear infinite; }
+#tank.moving .tread { animation: tread .3s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes tread { to { stroke-dashoffset: -10; } }
+
+/* ---------- Dispatch card ---------- */
+.wrap {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: clamp(16px, 4vh, 48px) 16px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.dispatch {
+  pointer-events: auto;
+  position: relative;
+  width: min(600px, 100%);
+  padding: 28px 34px 22px;
+  background:
+    repeating-linear-gradient(0deg, rgba(120, 100, 60, .045) 0 1px, transparent 1px 28px),
+    radial-gradient(120% 90% at 50% 0%, #fbf5e6 0%, #f1e6cc 70%, #e8d9b8 100%);
+  border: 1px solid #cdbb94;
+  border-radius: 3px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .6) inset,
+    0 18px 40px -12px rgba(30, 35, 30, .55),
+    0 4px 10px rgba(30, 35, 30, .2);
+  transform: rotate(-0.6deg);
+  text-align: center;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #7a6a48;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Black Ops One", Impact, "Arial Black", sans-serif;
+  font-weight: 400;
+  font-size: clamp(30px, 6.4vw, 50px);
+  line-height: 1.05;
+  letter-spacing: .02em;
+  color: #39432a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+}
+
+.welcome { margin: 10px 0 0; font-size: 17px; }
+.welcome u { text-decoration-color: #b34a3a; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+hr {
+  border: 0;
+  height: 2px;
+  margin: 16px auto;
+  width: 70%;
+  background: repeating-linear-gradient(90deg, #8f7d55 0 10px, transparent 10px 16px);
+}
+
+.dispatch p { margin: 0 0 10px; }
+.offer { font-size: 17px; color: #39432a; }
+.more {
+  font-family: "Black Ops One", Impact, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #b34a3a;
+  font-size: 18px;
+}
+
+/* ---------- Fire button ---------- */
+#fire {
+  margin: 14px 0 6px;
+  padding: 14px 28px 12px;
+  font-family: "Black Ops One", Impact, sans-serif;
+  font-size: 20px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #f6efd9;
+  background: linear-gradient(#6c7a43, #4d5830);
+  border: 2px solid #323a1e;
+  border-radius: 6px;
+  box-shadow: 0 4px 0 #2b3219, 0 8px 18px -6px rgba(0, 0, 0, .5);
+  cursor: pointer;
+  transition: transform .08s, box-shadow .08s, filter .2s;
+}
+#fire:hover:not(:disabled) { filter: brightness(1.08); }
+#fire:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #2b3219, 0 4px 10px -6px rgba(0, 0, 0, .5); }
+#fire:focus-visible { outline: 3px solid #e9c46a; outline-offset: 3px; }
+#fire:disabled {
+  cursor: progress;
+  color: #d8d2bd;
+  background: linear-gradient(#8b8f7c, #6d7161);
+  border-color: #55594a;
+  box-shadow: 0 4px 0 #4a4d40;
+}
+
+.count { font-size: 14px; color: #6f603f; }
+.count span { font-family: "Black Ops One", Impact, sans-serif; color: #39432a; }
+
+.signoff { margin-top: 14px !important; font-size: 15px; }
+
+footer { margin-top: 12px; font-size: 12px; }
+footer a { color: #6f603f; }
+footer a:hover { color: #b34a3a; }
+
+/* ---------- Stamp ---------- */
+.stamp {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 10px;
+  font-family: "Black Ops One", Impact, sans-serif;
+  font-size: 14px;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #b34a3a;
+  border: 3px solid #b34a3a;
+  border-radius: 6px;
+  opacity: 0;
+  transform: rotate(14deg) scale(2.2);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.stamp.on {
+  animation: stamp .35s cubic-bezier(.2, 1.6, .4, 1) forwards;
+}
+@keyframes stamp {
+  to { opacity: .85; transform: rotate(14deg) scale(1); }
+}
+
+/* ---------- Wide screens: card sits over the sea, beach stays clear ---------- */
+@media (min-width: 1000px) {
+  .wrap { justify-content: flex-start; padding-left: max(32px, 5vw); }
+  .dispatch { width: min(600px, 46vw); padding: 24px 30px 18px; }
+  h1 { font-size: clamp(30px, 2.7vw, 46px); white-space: nowrap; }
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 520px) {
+  .wrap { padding-top: 10px; }
+  .dispatch { padding: 16px 16px 10px; font-size: 14px; line-height: 1.4; transform: none; }
+  .dispatch p { margin-bottom: 6px; }
+  .kicker { font-size: 10px; margin-bottom: 2px; }
+  h1 { font-size: 28px; }
+  .welcome, .offer { font-size: 14px; }
+  .welcome { margin-top: 6px; }
+  .more { font-size: 15px; }
+  hr { margin: 8px auto; }
+  #fire { font-size: 16px; padding: 10px 18px 8px; margin: 8px 0 4px; }
+  .count { font-size: 12px; }
+  .signoff { font-size: 13px; margin-top: 8px !important; }
+  footer { margin-top: 6px; font-size: 11px; }
+  .stamp { top: 8px; right: 6px; font-size: 10px; border-width: 2px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clouds-slow, .clouds-fast, .balloon, .swell, .foam, .flag { animation: none; }
+}
