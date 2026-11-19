@@ -82,7 +82,7 @@ body {
   pointer-events: auto;
   position: relative;
   width: min(600px, 100%);
-  padding: 28px 34px 22px;
+  padding: 130px 34px 22px 34px;
   background:
     repeating-linear-gradient(0deg, rgba(120, 100, 60, .045) 0 1px, transparent 1px 28px),
     radial-gradient(120% 90% at 50% 0%, #fbf5e6 0%, #f1e6cc 70%, #e8d9b8 100%);
@@ -95,12 +95,12 @@ body {
   transform: rotate(-0.6deg);
   text-align: center;
   line-height: 1.5;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .kicker {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: #7a6a48;
@@ -110,40 +110,40 @@ h1 {
   margin: 0;
   font-family: "Black Ops One", Impact, "Arial Black", sans-serif;
   font-weight: 400;
-  font-size: clamp(30px, 6.4vw, 50px);
+  font-size: clamp(26px, 5.5vw, 44px);
   line-height: 1.05;
   letter-spacing: .02em;
   color: #39432a;
   text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
 }
 
-.welcome { margin: 10px 0 0; font-size: 17px; }
+.welcome { margin: 8px 0 0; font-size: 16px; }
 .welcome u { text-decoration-color: #b34a3a; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 hr {
   border: 0;
   height: 2px;
-  margin: 16px auto;
+  margin: 14px auto;
   width: 70%;
   background: repeating-linear-gradient(90deg, #8f7d55 0 10px, transparent 10px 16px);
 }
 
-.dispatch p { margin: 0 0 10px; }
-.offer { font-size: 17px; color: #39432a; }
+.dispatch p { margin: 0 0 9px; }
+.offer { font-size: 16px; color: #39432a; }
 .more {
   font-family: "Black Ops One", Impact, sans-serif;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: #b34a3a;
-  font-size: 18px;
+  font-size: 17px;
 }
 
 /* ---------- Fire button ---------- */
 #fire {
-  margin: 14px 0 6px;
-  padding: 14px 28px 12px;
+  margin: 12px 0 6px;
+  padding: 12px 24px 10px;
   font-family: "Black Ops One", Impact, sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: #f6efd9;
@@ -165,12 +165,12 @@ hr {
   box-shadow: 0 4px 0 #4a4d40;
 }
 
-.count { font-size: 14px; color: #6f603f; }
+.count { font-size: 13px; color: #6f603f; }
 .count span { font-family: "Black Ops One", Impact, sans-serif; color: #39432a; }
 
-.signoff { margin-top: 14px !important; font-size: 15px; }
+.signoff { margin-top: 12px !important; font-size: 14px; }
 
-footer { margin-top: 12px; font-size: 12px; }
+footer { margin-top: 10px; font-size: 11px; }
 footer a { color: #6f603f; }
 footer a:hover { color: #b34a3a; }
 
@@ -181,7 +181,7 @@ footer a:hover { color: #b34a3a; }
   right: 18px;
   padding: 6px 10px;
   font-family: "Black Ops One", Impact, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.05;
   text-transform: uppercase;
   letter-spacing: .06em;
@@ -203,26 +203,26 @@ footer a:hover { color: #b34a3a; }
 /* ---------- Wide screens: card sits over the sea, beach stays clear ---------- */
 @media (min-width: 1000px) {
   .wrap { justify-content: flex-start; padding-left: max(32px, 5vw); }
-  .dispatch { width: min(600px, 46vw); padding: 24px 30px 18px; }
-  h1 { font-size: clamp(30px, 2.7vw, 46px); white-space: nowrap; }
+  .dispatch { width: min(600px, 46vw); padding: 120px 30px 18px 30px; }
+  h1 { font-size: clamp(26px, 2.5vw, 40px); white-space: nowrap; }
 }
 
 /* ---------- Small screens ---------- */
 @media (max-width: 520px) {
   .wrap { padding-top: 10px; }
-  .dispatch { padding: 16px 16px 10px; font-size: 14px; line-height: 1.4; transform: none; }
-  .dispatch p { margin-bottom: 6px; }
-  .kicker { font-size: 10px; margin-bottom: 2px; }
-  h1 { font-size: 28px; }
-  .welcome, .offer { font-size: 14px; }
-  .welcome { margin-top: 6px; }
-  .more { font-size: 15px; }
-  hr { margin: 8px auto; }
-  #fire { font-size: 16px; padding: 10px 18px 8px; margin: 8px 0 4px; }
-  .count { font-size: 12px; }
-  .signoff { font-size: 13px; margin-top: 8px !important; }
-  footer { margin-top: 6px; font-size: 11px; }
-  .stamp { top: 8px; right: 6px; font-size: 10px; border-width: 2px; }
+  .dispatch { padding: 100px 16px 10px 16px; font-size: 13px; line-height: 1.4; transform: none; }
+  .dispatch p { margin-bottom: 5px; }
+  .kicker { font-size: 9px; margin-bottom: 2px; }
+  h1 { font-size: 24px; }
+  .welcome, .offer { font-size: 13px; }
+  .welcome { margin-top: 4px; }
+  .more { font-size: 14px; }
+  hr { margin: 6px auto; }
+  #fire { font-size: 15px; padding: 9px 16px 7px; margin: 6px 0 3px; }
+  .count { font-size: 11px; }
+  .signoff { font-size: 12px; margin-top: 6px !important; }
+  footer { margin-top: 5px; font-size: 10px; }
+  .stamp { top: 8px; right: 6px; font-size: 9px; border-width: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -232,10 +232,10 @@ footer a:hover { color: #b34a3a; }
 /* ---------- Dossier photo ---------- */
 .dossier {
   position: absolute;
-  top: -28px;
-  left: -18px;
-  width: 148px;
-  transform: rotate(-6deg);
+  top: 14px;
+  left: 14px;
+  width: 110px;
+  transform: rotate(-3deg);
   z-index: 5;
   pointer-events: none;
   filter: drop-shadow(2px 3px 4px rgba(0,0,0,.25));
@@ -245,16 +245,16 @@ footer a:hover { color: #b34a3a; }
   width: 100%;
   height: auto;
   background: #fff;
-  border: 8px solid #fff;
+  border: 6px solid #fff;
   box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 .paperclip {
   position: absolute;
-  top: -10px;
-  left: 20px;
-  width: 26px;
-  height: 40px;
-  transform: rotate(15deg);
+  top: -8px;
+  left: 16px;
+  width: 22px;
+  height: 34px;
+  transform: rotate(12deg);
   z-index: 10;
   pointer-events: none;
 }
@@ -262,23 +262,23 @@ footer a:hover { color: #b34a3a; }
 .paperclip::after {
   content: '';
   position: absolute;
-  border: 2.5px solid #8a8680;
-  border-radius: 12px 12px 0 0;
+  border: 2px solid #8a8680;
+  border-radius: 10px 10px 0 0;
   background: transparent;
 }
 .paperclip::before {
-  width: 16px;
-  height: 30px;
+  width: 14px;
+  height: 26px;
   top: 0;
-  left: 5px;
+  left: 4px;
   border-bottom: none;
   box-shadow: 1px 1px 1px rgba(0,0,0,.2);
 }
 .paperclip::after {
-  width: 8px;
-  height: 18px;
-  top: 6px;
-  left: 9px;
+  width: 7px;
+  height: 16px;
+  top: 5px;
+  left: 7.5px;
   border-bottom: none;
   border-color: #6e6a60;
 }
