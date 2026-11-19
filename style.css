@@ -246,16 +246,17 @@ footer a:hover { color: #b34a3a; }
   height: auto;
   background: #fff;
   border: 8px solid #fff;
-  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 2px 4px rgba(0,0,0,.12);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
 .paperclip {
   position: absolute;
-  top: -12px;
-  left: 22px;
-  width: 28px;
-  height: 42px;
-  transform: rotate(18deg);
-  z-index: 6;
+  top: -10px;
+  left: 20px;
+  width: 26px;
+  height: 40px;
+  transform: rotate(15deg);
+  z-index: 10;
+  pointer-events: none;
 }
 .paperclip::before,
 .paperclip::after {
@@ -266,16 +267,16 @@ footer a:hover { color: #b34a3a; }
   background: transparent;
 }
 .paperclip::before {
-  width: 18px;
-  height: 32px;
+  width: 16px;
+  height: 30px;
   top: 0;
   left: 5px;
   border-bottom: none;
-  box-shadow: 1px 1px 1px rgba(0,0,0,.15);
+  box-shadow: 1px 1px 1px rgba(0,0,0,.2);
 }
 .paperclip::after {
-  width: 10px;
-  height: 20px;
+  width: 8px;
+  height: 18px;
   top: 6px;
   left: 9px;
   border-bottom: none;
