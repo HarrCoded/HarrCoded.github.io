@@ -28,7 +28,7 @@ jobs:
         if: env.HAS_TOKEN == 'true'
         run: |
           mkdir -p dist
-          find . -maxdepth 1 -mindepth 1 ! -name '.*' ! -name dist ! -name wrangler.jsonc ! -name README.md ! -name node_modules -exec cp -r {} dist/ \;
+          find . -maxdepth 1 -mindepth 1 ! -name '.*' ! -name dist ! -name src ! -name wrangler.jsonc ! -name README.md ! -name node_modules -exec cp -r {} dist/ \;
           ls -la dist
 
       - name: Deploy

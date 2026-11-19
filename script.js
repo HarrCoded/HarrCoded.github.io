@@ -40,11 +40,34 @@
     });
 
   // ---------- smile counter ----------
+  // The shared all-time total lives on the server (/api/smiles, see src/worker.js).
+  // This browser's own count is kept locally for the "by you" note and the stamp.
   const KEY = 'beachhead.smiles';
-  let smiles = 0;
-  try { smiles = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) { /* storage unavailable */ }
-  smilesEl.textContent = smiles;
-  if (smiles > 0) stamp.classList.add('on');
+  const API = '/api/smiles';
+  const mineEl = $('smilesMine');
+  let mine = 0, total = null;
+  try { mine = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) { /* storage unavailable */ }
+  if (mine > 0) stamp.classList.add('on');
+
+  const showSmiles = () => {
+    smilesEl.textContent = (total ?? mine).toLocaleString();
+    if (mineEl) {
+      mineEl.hidden = !(total !== null && mine > 0);
+      mineEl.textContent = `(${mine.toLocaleString()} by you)`;
+    }
+  };
+  const syncTotal = async (method = 'GET') => {
+    try {
+      const res = await fetch(API, { method, cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (typeof data.smiles === 'number') { total = data.smiles; showSmiles(); }
+    } catch (e) { /* offline or no server: fall back to this browser's count */ }
+  };
+  showSmiles();
+  syncTotal();
+  // Watch other visitors' smiles roll in while the page is open.
+  setInterval(() => { if (!document.hidden) syncTotal(); }, 30000);
 
   // ---------- canvas ----------
   let W = 0, H = 0, dpr = 1;
@@ -352,10 +375,12 @@
   }
 
   function scoreSmile() {
-    smiles += 1;
-    smilesEl.textContent = smiles;
-    try { localStorage.setItem(KEY, String(smiles)); } catch (e) { /* ignore */ }
+    mine += 1;
+    if (total !== null) total += 1; // show it right away; the server's answer corrects it
+    showSmiles();
+    try { localStorage.setItem(KEY, String(mine)); } catch (e) { /* ignore */ }
     stamp.classList.add('on');
+    syncTotal('POST');
   }
 
   // ---------- mortar squad ----------
