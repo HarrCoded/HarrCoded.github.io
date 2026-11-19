@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>
+    // Old address (harrcoded.github.io) -> the real domain. Does nothing on the real domain.
+    if (location.hostname.endsWith('github.io')) {
+      location.replace('https://thedigitalbeachhead.com' + location.pathname + location.search + location.hash);
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Digital Beachhead</title>
-  <meta name="description" content="The official website of Jacob Harrison. Now with a confetti tank.">
+  <meta name="description" content="The official website of Jacob Harrison. Now with a confetti mortar.">
+  <link rel="canonical" href="https://thedigitalbeachhead.com/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Special+Elite&display=swap" rel="stylesheet">
