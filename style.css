@@ -283,3 +283,16 @@ footer a:hover { color: #b34a3a; }
   border-bottom: none;
   border-color: #6e6a60;
 }
+
+/* ---------- Squad names ---------- */
+.scene .trooper { pointer-events: auto; cursor: default; }
+.scene .trooper.captain { cursor: pointer; }
+.nameplate { opacity: 0; pointer-events: none; }
+.trooper:hover .nameplate { opacity: 1; }
+
+.dispatch { transition: transform .9s cubic-bezier(.55, .05, .7, .2); }
+.dispatch.aside {
+  transform: translateX(-130vw) rotate(-7deg) !important;
+  pointer-events: none;
+}
+body.skirmish { cursor: crosshair; }
