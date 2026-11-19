@@ -82,7 +82,7 @@ body {
   pointer-events: auto;
   position: relative;
   width: min(600px, 100%);
-  padding: 28px 56px 22px 150px;
+  padding: calc(28px + .5ch) calc(56px + .5ch) calc(22px + .5ch) calc(150px + .5ch);
   background:
     repeating-linear-gradient(0deg, rgba(120, 100, 60, .045) 0 1px, transparent 1px 28px),
     radial-gradient(120% 90% at 50% 0%, #fbf5e6 0%, #f1e6cc 70%, #e8d9b8 100%);
@@ -203,14 +203,14 @@ footer a:hover { color: #b34a3a; }
 /* ---------- Wide screens: card sits over the sea, beach stays clear ---------- */
 @media (min-width: 1000px) {
   .wrap { justify-content: flex-start; padding-left: max(32px, 5vw); }
-  .dispatch { width: min(600px, 46vw); padding: 24px 48px 18px 140px; }
+  .dispatch { width: min(600px, 46vw); padding: calc(24px + .5ch) calc(48px + .5ch) calc(18px + .5ch) calc(140px + .5ch); }
   h1 { font-size: clamp(26px, 2.6vw, 42px); white-space: nowrap; }
 }
 
 /* ---------- Small screens ---------- */
 @media (max-width: 520px) {
   .wrap { padding-top: 10px; }
-  .dispatch { padding: 16px 20px 10px 120px; font-size: 13px; line-height: 1.4; transform: none; }
+  .dispatch { padding: calc(16px + .5ch) calc(20px + .5ch) calc(10px + .5ch) calc(120px + .5ch); font-size: 13px; line-height: 1.4; transform: none; }
   .dispatch p { margin-bottom: 5px; }
   .kicker { font-size: 9px; margin-bottom: 2px; }
   h1 { font-size: 24px; }
