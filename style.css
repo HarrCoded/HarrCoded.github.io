@@ -228,3 +228,45 @@ footer a:hover { color: #b34a3a; }
 @media (prefers-reduced-motion: reduce) {
   .clouds-slow, .clouds-fast, .balloon, .swell, .foam, .flag { animation: none; }
 }
+
+/* ---------- Dossier photo ---------- */
+.dossier {
+  position: absolute;
+  top: -28px;
+  left: -18px;
+  width: 148px;
+  transform: rotate(-6deg);
+  z-index: 5;
+  pointer-events: none;
+  filter: drop-shadow(2px 3px 4px rgba(0,0,0,.25));
+}
+.dossier img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #f5f0e4;
+  border: 10px solid #f8f4ea;
+  box-shadow: 0 1px 0 rgba(255,255,255,.8) inset, 0 2px 6px rgba(0,0,0,.15);
+}
+.paperclip {
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  width: 22px;
+  height: 36px;
+  background: linear-gradient(180deg, #c8c4b8 0%, #9a968c 40%, #d0ccc0 100%);
+  border-radius: 0 0 11px 11px;
+  box-shadow: 1px 1px 2px rgba(0,0,0,.3);
+  transform: rotate(12deg);
+}
+.paperclip::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 8px;
+  border: 2px solid #6e6a60;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
