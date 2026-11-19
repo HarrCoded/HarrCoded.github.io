@@ -15,12 +15,202 @@
   <!-- ===== The beach (decorative) ===== -->
   <div class="scene" aria-hidden="true">
     <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- full SVG content omitted for brevity in this call; full original preserved in repo -->
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="470" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#7d91a0"/>
+          <stop offset="0.55" stop-color="#b6b6ab"/>
+          <stop offset="1" stop-color="#e4d0ad"/>
+        </linearGradient>
+        <radialGradient id="sun" cx="1180" cy="370" r="300" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fff3d6" stop-opacity="0.75"/>
+          <stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="sea" x1="0" y1="466" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#768f97"/>
+          <stop offset="0.35" stop-color="#4f6b75"/>
+          <stop offset="1" stop-color="#2c4651"/>
+        </linearGradient>
+        <linearGradient id="bluff" x1="0" y1="430" x2="0" y2="760" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#7a8462"/>
+          <stop offset="1" stop-color="#4f5743"/>
+        </linearGradient>
+        <linearGradient id="sand" x1="0" y1="740" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#d6c295"/>
+          <stop offset="1" stop-color="#b59d6c"/>
+        </linearGradient>
+        <linearGradient id="surf" x1="0" y1="745" x2="0" y2="900" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#4d6a74"/>
+          <stop offset="1" stop-color="#2c4651"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-50%" width="140%" height="200%">
+          <feGaussianBlur stdDeviation="6"/>
+        </filter>
+      </defs>
+
+      <!-- Sky -->
+      <rect width="1600" height="480" fill="url(#sky)"/>
+      <rect width="1600" height="480" fill="url(#sun)"/>
+
+      <!-- Clouds -->
+      <g class="clouds clouds-slow" fill="#eef0ec" opacity="0.55" filter="url(#soft)">
+        <ellipse cx="200" cy="120" rx="170" ry="34"/>
+        <ellipse cx="300" cy="100" rx="110" ry="30"/>
+        <ellipse cx="980" cy="80" rx="210" ry="30"/>
+        <ellipse cx="1420" cy="170" rx="160" ry="26"/>
+      </g>
+      <g class="clouds clouds-fast" fill="#f6f2e8" opacity="0.5" filter="url(#soft)">
+        <ellipse cx="620" cy="220" rx="150" ry="22"/>
+        <ellipse cx="1220" cy="270" rx="120" ry="18"/>
+        <ellipse cx="80" cy="300" rx="120" ry="18"/>
+      </g>
+
+      <!-- Distant fleet and barrage balloons -->
+      <g fill="#66737a" opacity="0.75">
+        <g transform="translate(110 470)">
+          <path d="M0 0 L150 0 L140 -9 L102 -9 L98 -22 L84 -22 L80 -34 L72 -34 L70 -22 L52 -22 L48 -12 L8 -12 Z"/>
+        </g>
+        <g transform="translate(380 470) scale(0.7)">
+          <path d="M0 0 L120 0 L112 -8 L80 -8 L76 -20 L60 -20 L58 -30 L52 -30 L50 -20 L36 -20 L32 -10 L6 -10 Z"/>
+        </g>
+        <g transform="translate(560 470) scale(0.5)">
+          <path d="M0 0 L150 0 L140 -9 L102 -9 L98 -22 L84 -22 L80 -34 L72 -34 L70 -22 L52 -22 L48 -12 L8 -12 Z"/>
+        </g>
+      </g>
+      <g class="balloon b1" opacity="0.7">
+        <line x1="185" y1="440" x2="185" y2="352" stroke="#6b767c" stroke-width="1"/>
+        <ellipse cx="185" cy="345" rx="17" ry="7" fill="#808b90"/>
+        <path d="M168 345 L160 339 L160 351 Z" fill="#808b90"/>
+      </g>
+      <g class="balloon b2" opacity="0.6">
+        <line x1="420" y1="452" x2="420" y2="382" stroke="#6b767c" stroke-width="1"/>
+        <ellipse cx="420" cy="376" rx="12" ry="5" fill="#808b90"/>
+        <path d="M408 376 L402 372 L402 380 Z" fill="#808b90"/>
+      </g>
+
+      <!-- Sea -->
+      <rect y="466" width="1600" height="434" fill="url(#sea)"/>
+      <rect y="463" width="1600" height="6" fill="#e6dcc4" opacity="0.45"/>
+      <g class="swell" fill="none" stroke="#a9bfc3" stroke-linecap="round" opacity="0.45">
+        <path d="M60 520 q20 -6 40 0" stroke-width="2"/>
+        <path d="M300 540 q24 -7 48 0" stroke-width="2"/>
+        <path d="M520 515 q20 -6 40 0" stroke-width="2"/>
+        <path d="M720 560 q24 -7 48 0" stroke-width="2"/>
+        <path d="M150 600 q30 -8 60 0" stroke-width="2.5"/>
+        <path d="M430 630 q30 -8 60 0" stroke-width="2.5"/>
+        <path d="M640 610 q30 -8 60 0" stroke-width="2.5"/>
+        <path d="M60 690 q36 -10 72 0" stroke-width="3"/>
+        <path d="M320 710 q36 -10 72 0" stroke-width="3"/>
+      </g>
+      <g class="swell swell-b" fill="none" stroke="#c4d4d4" stroke-linecap="round" opacity="0.35">
+        <path d="M200 560 q22 -6 44 0" stroke-width="2"/>
+        <path d="M610 580 q22 -6 44 0" stroke-width="2"/>
+        <path d="M30 640 q30 -8 60 0" stroke-width="2.5"/>
+        <path d="M520 680 q34 -9 68 0" stroke-width="3"/>
+        <path d="M200 780 q40 -10 80 0" stroke-width="3"/>
+      </g>
+
+      <!-- Bluffs -->
+      <path d="M760 474 C860 456 980 444 1100 442 C1250 434 1420 431 1600 427 L1600 482 L760 482 Z" fill="#9ca598" opacity="0.7"/>
+      <path d="M940 752 C1000 700 1036 642 1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436 L1600 770 L940 770 Z" fill="url(#bluff)"/>
+      <path d="M1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436" fill="none" stroke="#6c7e45" stroke-width="12" stroke-linecap="round"/>
+      <g fill="none" stroke="#3f4636" stroke-width="3" opacity="0.25" stroke-linecap="round">
+        <path d="M1120 610 C1160 580 1200 560 1260 552"/>
+        <path d="M1180 520 C1230 505 1300 500 1380 498"/>
+        <path d="M1060 690 C1120 660 1200 640 1300 632"/>
+        <path d="M1320 590 C1400 578 1480 572 1600 570"/>
+      </g>
+
+      <!-- Beach -->
+      <path d="M470 900 C560 830 640 770 735 752 C780 745 830 742 900 742 L1600 742 L1600 900 Z" fill="url(#sand)"/>
+      <path d="M470 900 C560 830 640 770 735 752 C762 748 792 746 822 745 C760 762 692 804 646 900 Z" fill="#a48e64" opacity="0.85"/>
+      <g fill="#9c8a66" opacity="0.6">
+        <circle cx="1000" cy="770" r="2"/><circle cx="1080" cy="800" r="2.5"/><circle cx="1180" cy="760" r="2"/>
+        <circle cx="1260" cy="830" r="3"/><circle cx="1370" cy="780" r="2"/><circle cx="1480" cy="850" r="2.5"/>
+        <circle cx="900" cy="830" r="2.5"/><circle cx="1540" cy="770" r="2"/><circle cx="1120" cy="870" r="3"/>
+      </g>
+
+      <!-- Hedgehog obstacles -->
+      <g class="hedgehogs" stroke="#3c3a34" stroke-width="5" stroke-linecap="round">
+        <g transform="translate(1120 744)"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#9c8760" stroke="none"/><path d="M-16 0 L12 -30 M16 0 L-12 -30 M-20 -12 L20 -16"/></g>
+        <g transform="translate(1275 746) scale(0.85)"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#9c8760" stroke="none"/><path d="M-16 0 L12 -30 M16 0 L-12 -30 M-20 -12 L20 -16"/></g>
+        <g transform="translate(1430 744) scale(0.75)"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#9c8760" stroke="none"/><path d="M-16 0 L12 -30 M16 0 L-12 -30 M-20 -12 L20 -16"/></g>
+        <g transform="translate(1550 750) scale(0.9)"><ellipse cx="0" cy="2" rx="22" ry="4" fill="#9c8760" stroke="none"/><path d="M-16 0 L12 -30 M16 0 L-12 -30 M-20 -12 L20 -16"/></g>
+      </g>
+
+      <!-- Foam on the shoreline -->
+      <path class="foam" d="M455 900 C548 828 628 768 728 750 C752 746 772 745 800 744" fill="none" stroke="#f3f0e6" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+      <path class="foam foam-b" d="M440 900 C530 834 612 778 712 758 C736 754 756 752 780 751" fill="none" stroke="#e7efee" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+      <!-- Landing craft: back layer (ramp + far side) -->
+      <g id="boatBack" transform="translate(-300 748)">
+        <rect x="-226" y="-64" width="222" height="60" fill="#4b5657"/>
+        <g id="ramp">
+          <rect x="-1" y="-72" width="13" height="72" rx="2" fill="#6a7475" stroke="#4b5657" stroke-width="2"/>
+          <path d="M2 -64 H9 M2 -52 H9 M2 -40 H9 M2 -28 H9 M2 -16 H9" stroke="#566061" stroke-width="2"/>
+          <circle id="rampTip" cx="5" cy="-70" r="1" fill="none"/>
+        </g>
+      </g>
+
+      <!-- The tank -->
+      <g id="tank" transform="translate(-425 744)">
+        <circle id="exhaust" cx="-80" cy="-40" r="1" fill="none"/>
+        <!-- hull -->
+        <path d="M-82 -28 L80 -28 L67 -52 L-72 -52 Z" fill="#5f6b3b" stroke="#434b29" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M-70 -50 L66 -50" stroke="#7a8650" stroke-width="2"/>
+        <g transform="translate(-38 -40)" fill="#eeeadb">
+          <circle r="9" fill="none" stroke="#eeeadb" stroke-width="1.6"/>
+          <path d="M0 -7 L1.7 -2.2 L6.7 -2.2 L2.7 0.9 L4.2 5.7 L0 2.8 L-4.2 5.7 L-2.7 0.9 L-6.7 -2.2 L-1.7 -2.2 Z"/>
+        </g>
+        <!-- tracks -->
+        <rect x="-78" y="-30" width="156" height="30" rx="15" fill="#2e3122"/>
+        <rect class="tread" x="-78" y="-30" width="156" height="30" rx="15" fill="none" stroke="#4a4e37" stroke-width="3" stroke-dasharray="5 5"/>
+        <g class="wheels" fill="#555c3d" stroke="#23261a" stroke-width="2">
+          <g class="wheel" transform="translate(-56 -15)"><circle r="11"/><path d="M-8 0 H8 M0 -8 V8" stroke="#3a3f29"/></g>
+          <g class="wheel" transform="translate(-28 -15)"><circle r="11"/><path d="M-8 0 H8 M0 -8 V8" stroke="#3a3f29"/></g>
+          <g class="wheel" transform="translate(0 -15)"><circle r="11"/><path d="M-8 0 H8 M0 -8 V8" stroke="#3a3f29"/></g>
+          <g class="wheel" transform="translate(28 -15)"><circle r="11"/><path d="M-8 0 H8 M0 -8 V8" stroke="#3a3f29"/></g>
+          <g class="wheel" transform="translate(56 -15)"><circle r="11"/><path d="M-8 0 H8 M0 -8 V8" stroke="#3a3f29"/></g>
+        </g>
+        <!-- turret -->
+        <g id="turret" transform="translate(-4 -52)">
+          <g id="barrel" transform="translate(36 -17)">
+            <circle id="pivot" cx="0" cy="0" r="1" fill="none"/>
+            <rect x="0" y="-4.5" width="80" height="9" rx="2" fill="#4f5a30" stroke="#394121" stroke-width="1.5"/>
+            <rect x="74" y="-6.5" width="12" height="13" rx="2" fill="#444d29"/>
+            <circle id="muzzle" cx="88" cy="0" r="1" fill="none"/>
+          </g>
+          <path d="M-40 0 L-35 -25 Q-31 -35 -16 -35 L20 -35 Q34 -33 39 -19 L42 0 Z" fill="#6a7742" stroke="#434b29" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="-22" y="-42" width="22" height="7" rx="3" fill="#5a6636" stroke="#434b29" stroke-width="1.5"/>
+          <path d="M-30 -26 Q-24 -31 -12 -31" stroke="#86935a" stroke-width="2" fill="none"/>
+        </g>
+      </g>
+
+      <!-- Landing craft: front layer (near side hides the tank) -->
+      <g id="boatFront" transform="translate(-300 748)">
+        <rect x="-226" y="-104" width="22" height="40" rx="3" fill="#5f6a6b" stroke="#4b5657" stroke-width="2"/>
+        <line x1="-215" y1="-104" x2="-215" y2="-134" stroke="#3d4546" stroke-width="2"/>
+        <path class="flag" d="M-215 -134 L-192 -129 L-215 -123 Z" fill="#c8483b"/>
+        <path d="M-232 -68 L-4 -68 L3 6 L-222 14 C-236 0 -236 -40 -232 -68 Z" fill="#717d7e" stroke="#4b5657" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="-232" y="-68" width="228" height="7" fill="#5e696a"/>
+        <g fill="#5b6566">
+          <circle cx="-200" cy="-50" r="2"/><circle cx="-160" cy="-50" r="2"/><circle cx="-120" cy="-50" r="2"/><circle cx="-80" cy="-50" r="2"/><circle cx="-40" cy="-50" r="2"/>
+        </g>
+        <text x="-150" y="-26" font-family="Black Ops One, Impact, sans-serif" font-size="20" fill="#e9e6da" opacity="0.85">DB-1</text>
+      </g>
+
+      <!-- Surf in front of the boat -->
+      <path d="M0 754 Q30 746 60 754 T120 754 T180 754 T240 754 T300 754 T360 754 T420 754 T480 754 T540 754 T600 754 T660 754 L728 752 C690 790 620 830 560 900 L0 900 Z" fill="url(#surf)" opacity="0.94"/>
+      <path class="foam foam-c" d="M0 754 Q30 746 60 754 T120 754 T180 754 T240 754 T300 754 T360 754 T420 754 T480 754 T540 754 T600 754 T660 754 L728 752" fill="none" stroke="#dfe9e7" stroke-width="3" opacity="0.7"/>
+
+      <!-- Mortar squad (built by script.js) -->
+      <g id="squad" transform="translate(800 874) scale(1.3)"></g>
     </svg>
   </div>
 
+  <!-- Confetti, smoke and shells are drawn here -->
   <canvas id="fx" aria-hidden="true"></canvas>
 
+  <!-- ===== The dispatch ===== -->
   <main class="wrap">
     <article class="dispatch">
       <div class="dossier" aria-hidden="true">
