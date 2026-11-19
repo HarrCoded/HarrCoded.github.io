@@ -6,10 +6,9 @@
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"
-  }
-  // Custom domain goes here once it's bought, e.g.:
-  // "routes": [
-  //   { "pattern": "example.com", "custom_domain": true },
-  //   { "pattern": "www.example.com", "custom_domain": true }
-  // ]
+  },
+  "routes": [
+    { "pattern": "thedigitalbeachhead.com", "custom_domain": true },
+    { "pattern": "www.thedigitalbeachhead.com", "custom_domain": true }
+  ]
 }
