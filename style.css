@@ -82,7 +82,7 @@ body {
   pointer-events: auto;
   position: relative;
   width: min(600px, 100%);
-  padding: 130px 34px 22px 34px;
+  padding: 28px 34px 22px 150px;
   background:
     repeating-linear-gradient(0deg, rgba(120, 100, 60, .045) 0 1px, transparent 1px 28px),
     radial-gradient(120% 90% at 50% 0%, #fbf5e6 0%, #f1e6cc 70%, #e8d9b8 100%);
@@ -94,7 +94,7 @@ body {
     0 4px 10px rgba(30, 35, 30, .2);
   transform: rotate(-0.6deg);
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.45;
   font-size: 15px;
 }
 
@@ -110,21 +110,21 @@ h1 {
   margin: 0;
   font-family: "Black Ops One", Impact, "Arial Black", sans-serif;
   font-weight: 400;
-  font-size: clamp(26px, 5.5vw, 44px);
+  font-size: clamp(26px, 5.8vw, 46px);
   line-height: 1.05;
   letter-spacing: .02em;
   color: #39432a;
   text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
 }
 
-.welcome { margin: 8px 0 0; font-size: 16px; }
+.welcome { margin: 10px 0 0; font-size: 16px; }
 .welcome u { text-decoration-color: #b34a3a; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 hr {
   border: 0;
   height: 2px;
   margin: 14px auto;
-  width: 70%;
+  width: 65%;
   background: repeating-linear-gradient(90deg, #8f7d55 0 10px, transparent 10px 16px);
 }
 
@@ -140,10 +140,10 @@ hr {
 
 /* ---------- Fire button ---------- */
 #fire {
-  margin: 12px 0 6px;
-  padding: 12px 24px 10px;
+  margin: 14px 0 6px;
+  padding: 13px 26px 11px;
   font-family: "Black Ops One", Impact, sans-serif;
-  font-size: 18px;
+  font-size: 19px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: #f6efd9;
@@ -203,14 +203,14 @@ footer a:hover { color: #b34a3a; }
 /* ---------- Wide screens: card sits over the sea, beach stays clear ---------- */
 @media (min-width: 1000px) {
   .wrap { justify-content: flex-start; padding-left: max(32px, 5vw); }
-  .dispatch { width: min(600px, 46vw); padding: 120px 30px 18px 30px; }
-  h1 { font-size: clamp(26px, 2.5vw, 40px); white-space: nowrap; }
+  .dispatch { width: min(600px, 46vw); padding: 24px 30px 18px 140px; }
+  h1 { font-size: clamp(26px, 2.6vw, 42px); white-space: nowrap; }
 }
 
 /* ---------- Small screens ---------- */
 @media (max-width: 520px) {
   .wrap { padding-top: 10px; }
-  .dispatch { padding: 100px 16px 10px 16px; font-size: 13px; line-height: 1.4; transform: none; }
+  .dispatch { padding: 16px 16px 10px 120px; font-size: 13px; line-height: 1.4; transform: none; }
   .dispatch p { margin-bottom: 5px; }
   .kicker { font-size: 9px; margin-bottom: 2px; }
   h1 { font-size: 24px; }
@@ -232,10 +232,10 @@ footer a:hover { color: #b34a3a; }
 /* ---------- Dossier photo ---------- */
 .dossier {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  width: 110px;
-  transform: rotate(-3deg);
+  top: 16px;
+  left: 16px;
+  width: 120px;
+  transform: rotate(-4deg);
   z-index: 5;
   pointer-events: none;
   filter: drop-shadow(2px 3px 4px rgba(0,0,0,.25));
