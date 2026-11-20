@@ -55,8 +55,8 @@
       </defs>
 
       <!-- Sky -->
-      <rect width="1600" height="480" fill="url(#sky)"/>
-      <rect width="1600" height="480" fill="url(#sun)"/>
+      <rect width="3000" height="480" fill="url(#sky)"/>
+      <rect width="3000" height="480" fill="url(#sun)"/>
 
       <!-- Clouds -->
       <g class="clouds clouds-slow" fill="#eef0ec" opacity="0.55" filter="url(#soft)">
@@ -95,8 +95,8 @@
       </g>
 
       <!-- Sea -->
-      <rect y="466" width="1600" height="434" fill="url(#sea)"/>
-      <rect y="463" width="1600" height="6" fill="#e6dcc4" opacity="0.45"/>
+      <rect y="466" width="3000" height="434" fill="url(#sea)"/>
+      <rect y="463" width="3000" height="6" fill="#e6dcc4" opacity="0.45"/>
       <g class="swell" fill="none" stroke="#a9bfc3" stroke-linecap="round" opacity="0.45">
         <path d="M60 520 q20 -6 40 0" stroke-width="2"/>
         <path d="M300 540 q24 -7 48 0" stroke-width="2"/>
@@ -117,23 +117,33 @@
       </g>
 
       <!-- Bluffs -->
-      <path d="M760 474 C860 456 980 444 1100 442 C1250 434 1420 431 1600 427 L1600 482 L760 482 Z" fill="#9ca598" opacity="0.7"/>
-      <path d="M940 752 C1000 700 1036 642 1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436 L1600 770 L940 770 Z" fill="url(#bluff)"/>
-      <path d="M1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436" fill="none" stroke="#6c7e45" stroke-width="12" stroke-linecap="round"/>
+      <path d="M760 474 C860 456 980 444 1100 442 C1250 434 1420 431 1600 427 C1780 422 1940 448 2100 486 C2260 524 2440 575 2620 618 L2620 668 C2440 625 2260 578 2100 542 C1940 508 1780 478 1600 482 L760 482 Z" fill="#9ca598" opacity="0.7"/>
+      <path d="M940 752 C1000 700 1036 642 1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436 C1740 426 1880 438 2020 468 C2140 496 2220 548 2300 600 C2400 662 2520 720 2660 752 L2780 770 L940 770 Z" fill="url(#bluff)"/>
+      <path d="M1078 602 C1108 572 1120 524 1160 490 C1200 458 1262 448 1340 446 C1440 442 1520 438 1600 436 C1740 426 1880 438 2020 468 C2140 496 2220 548 2300 600 C2400 662 2520 720 2660 752" fill="none" stroke="#6c7e45" stroke-width="12" stroke-linecap="round"/>
       <g fill="none" stroke="#3f4636" stroke-width="3" opacity="0.25" stroke-linecap="round">
         <path d="M1120 610 C1160 580 1200 560 1260 552"/>
         <path d="M1180 520 C1230 505 1300 500 1380 498"/>
         <path d="M1060 690 C1120 660 1200 640 1300 632"/>
-        <path d="M1320 590 C1400 578 1480 572 1600 570"/>
+        <path d="M1320 590 C1400 578 1480 572 1600 570 C1760 566 1920 590 2080 628"/>
+        <path d="M1500 660 C1680 650 1860 668 2040 710 C2200 746 2360 770 2500 778"/>
+        <path d="M1860 500 C2000 490 2140 520 2280 570"/>
+      </g>
+      <g fill="#5d6848" opacity="0.55">
+        <ellipse cx="1760" cy="500" rx="18" ry="7"/>
+        <ellipse cx="1940" cy="530" rx="26" ry="8"/>
+        <ellipse cx="2140" cy="590" rx="20" ry="7"/>
+        <ellipse cx="2360" cy="680" rx="28" ry="8"/>
       </g>
 
       <!-- Beach -->
-      <path d="M470 900 C560 830 640 770 735 752 C780 745 830 742 900 742 L1600 742 L1600 900 Z" fill="url(#sand)"/>
+      <path d="M470 900 C560 830 640 770 735 752 C780 745 830 742 900 742 L1600 742 L2100 750 L2500 762 L2900 776 L2900 900 Z" fill="url(#sand)"/>
       <path d="M470 900 C560 830 640 770 735 752 C762 748 792 746 822 745 C760 762 692 804 646 900 Z" fill="#a48e64" opacity="0.85"/>
       <g fill="#9c8a66" opacity="0.6">
         <circle cx="1000" cy="770" r="2"/><circle cx="1080" cy="800" r="2.5"/><circle cx="1180" cy="760" r="2"/>
         <circle cx="1260" cy="830" r="3"/><circle cx="1370" cy="780" r="2"/><circle cx="1480" cy="850" r="2.5"/>
         <circle cx="900" cy="830" r="2.5"/><circle cx="1540" cy="770" r="2"/><circle cx="1120" cy="870" r="3"/>
+        <circle cx="1720" cy="778" r="2.4"/><circle cx="1880" cy="800" r="2"/><circle cx="2060" cy="786" r="2.6"/>
+        <circle cx="2240" cy="810" r="2"/><circle cx="2420" cy="798" r="2.5"/>
       </g>
 
       <!-- Hedgehog obstacles -->
