@@ -285,6 +285,36 @@ footer a:hover { color: #b34a3a; }
   border-color: #6e6a60;
 }
 
+/* ---------- Homepage link (under the dossier photo) ---------- */
+.homepage-link {
+  position: absolute;
+  top: 188px;
+  left: 18px;
+  width: 116px;
+  padding: 8px 6px 6px;
+  font-family: "Black Ops One", Impact, sans-serif;
+  font-size: 12px;
+  line-height: 1.15;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  color: #f6efd9;
+  background: linear-gradient(#6c7a43, #4d5830);
+  border: 2px solid #323a1e;
+  border-radius: 5px;
+  box-shadow: 0 3px 0 #2b3219, 0 6px 12px -6px rgba(0, 0, 0, .5);
+  transform: rotate(-2deg);
+  z-index: 6;
+  transition: filter .2s;
+}
+.homepage-link:hover { filter: brightness(1.1); }
+.homepage-link:active { transform: rotate(-2deg) translateY(2px); box-shadow: 0 1px 0 #2b3219; }
+.homepage-link:focus-visible { outline: 3px solid #e9c46a; outline-offset: 3px; }
+@media (max-width: 520px) {
+  .homepage-link { top: 176px; font-size: 10px; padding: 6px 4px 4px; }
+}
+
 /* ---------- Squad names ---------- */
 .scene .trooper { pointer-events: auto; cursor: default; }
 .scene .trooper.captain { cursor: pointer; }
