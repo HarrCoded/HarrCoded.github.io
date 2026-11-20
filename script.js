@@ -647,6 +647,50 @@
   }, hostilesEl);
   hint.textContent = narrow() ? 'TAP TO FIRE' : 'CLICK TO FIRE';
 
+  // Sand rises toward the bluff. Feet stay on the open beach, never on the cliff.
+  function sandBack(x) {
+    if (x < 1600) return 746;
+    if (x < 2100) return 746 + ((x - 1600) / 500) * 4;
+    if (x < 2500) return 750 + ((x - 2100) / 400) * 12;
+    return 762 + (x - 2500) * 0.02;
+  }
+  function clampBeach(x, y) {
+    x = clamp(x, 1480, 2560);
+    y = clamp(y, sandBack(x) + 16, 888);
+    return { x, y };
+  }
+  function worldFromScreen(sx, sy) {
+    const pt = beach.createSVGPoint();
+    pt.x = sx; pt.y = sy;
+    const ctm = beach.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : null;
+  }
+
+  // A low wall facing the mortar squad (to the left), so the bags sit between
+  // the two sides instead of in front of the camera.
+  function makeStack(x, y, rows) {
+    const g = mk('g', {}, hostilesEl);
+    mk('ellipse', { cx: x, cy: y + 2, rx: 20, ry: 5, fill: '#8d7754', opacity: 0.32 }, g);
+    for (let i = 0; i < rows; i++) {
+      mk('ellipse', {
+        cx: x + (i % 2 ? 5 : -5),
+        cy: y - 3 - i * 6.4,
+        rx: 16, ry: 5.5,
+        fill: (i + Math.round(x / 7)) % 2 ? '#c6b08a' : '#ad9670',
+        stroke: '#8d7756', 'stroke-width': 0.6,
+      }, g);
+    }
+    return { g, y };
+  }
+  const stacks = [
+    [1648, 876, 2],
+    [1674, 848, 3],
+    [1656, 820, 2],
+    [1696, 794, 3],
+    [1670, 770, 2],
+    [1710, 804, 2],
+  ].map(([x, y, n]) => makeStack(x, y, n));
+
   function makeFoe(x, y) {
     const g = mk('g', { transform: `translate(${x} ${y})` }, hostilesEl);
     mk('line', { x1: 0, y1: -2, x2: -1, y2: -22, stroke: '#6d6452', 'stroke-width': 13, 'stroke-linecap': 'round' }, g);
@@ -656,53 +700,120 @@
     mk('path', { d: 'M-11 -30 Q-11 -42 0 -42 Q11 -42 11 -30 Z', fill: '#5c4b36' }, g);
     mk('line', { x1: -13, y1: -30, x2: 13, y2: -30, stroke: '#5c4b36', 'stroke-width': 2.5, 'stroke-linecap': 'round' }, g);
     mk('line', { x1: 2, y1: -20, x2: -24, y2: -26, stroke: '#2c2924', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, g);
-    return { g, x, home: x, y0: y, alive: true, running: false, phase: rand(0, 6.2), base: rand(1.7, 2.4), span: rand(34, 64) };
+    return {
+      g, x, y, homeX: x, homeY: y, alive: true, running: false,
+      vx: 0, vy: 0, gx: x, gy: y, until: 0, burst: 1, phase: rand(0, 6.2), face: 1,
+    };
   }
-  const foes = [1900, 1995, 2080, 2175, 2260].map((x, i) => makeFoe(x, 754 + (i % 2) * 4));
-  const bags = mk('g', {}, hostilesEl);
-  for (let i = 0; i < 22; i++) {
-    mk('ellipse', {
-      cx: 1860 + i * 20, cy: 768 + (i % 2) * 5, rx: 13, ry: 6.5,
-      fill: i % 2 ? '#c6b08a' : '#ad9670', stroke: '#8d7756', 'stroke-width': 0.7,
-    }, bags);
-  }
+  // Behind the wall: further from the squad, with open sand in front of them.
+  const foes = [
+    [1860, 858], [1948, 824], [1904, 882], [2060, 846], [1990, 792],
+  ].map(([x, y]) => makeFoe(x, y));
 
+  function paintHostiles() {
+    const bits = [
+      ...stacks.map((s) => ({ g: s.g, y: s.y })),
+      ...foes.map((f) => ({ g: f.g, y: f.y + (f.alive ? 0 : 14) })),
+    ].sort((a, b) => a.y - b.y);
+    bits.forEach((b) => hostilesEl.appendChild(b.g));
+    hostilesEl.appendChild(hint);
+  }
+  function placeFoe(f) {
+    f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y.toFixed(1)}) scale(${f.face} 1)`);
+  }
+  function planFoe(f, now) {
+    const heat = battle ? Math.min(1, Math.max(0, now / 1000 - battle.tPlay) / 9) : 0;
+    const blast = battle && battle.blast;
+    const fleeing = blast && now - blast.t < 1500 && Math.hypot(f.x - blast.x, f.y - blast.y) < 280;
+    let ang, dist;
+    if (fleeing) {
+      ang = Math.atan2(f.y - blast.y, f.x - blast.x) + rand(-0.8, 0.8);
+      dist = rand(100, 190);
+      f.burst = rand(1.4, 1.9);
+    } else if (Math.random() < 0.4) {
+      const heading = Math.hypot(f.vx, f.vy) > 8 ? Math.atan2(f.vy, f.vx) : rand(0, Math.PI * 2);
+      ang = heading + (Math.random() < 0.5 ? -1 : 1) * rand(0.9, 2.4);
+      dist = rand(46, 130) * (1 + heat * 0.3);
+      f.burst = rand(0.95, 1.5);
+    } else {
+      const tx = rand(1520, 2480);
+      const ty = rand(sandBack(tx) + 28, 872);
+      ang = Math.atan2(ty - f.y, tx - f.x);
+      dist = Math.hypot(tx - f.x, ty - f.y);
+      f.burst = rand(0.72, 1.15 + heat * 0.4);
+    }
+    const p = clampBeach(f.x + Math.cos(ang) * dist, f.y + Math.sin(ang) * dist * (fleeing ? 0.85 : 1));
+    f.gx = p.x; f.gy = p.y;
+    f.until = now + rand(fleeing ? 260 : 480, fleeing ? 720 : 1400);
+  }
+  let foeStamp = 0;
   function resetFoes() {
+    foeStamp = 0;
     foes.forEach((f) => {
-      f.alive = true; f.running = false; f.x = f.home;
+      f.alive = true; f.running = false;
+      f.x = f.homeX; f.y = f.homeY; f.vx = 0; f.vy = 0; f.face = 1; f.burst = 1;
       f.g.setAttribute('opacity', '1');
-      f.g.setAttribute('transform', `translate(${f.home} ${f.y0})`);
+      placeFoe(f);
     });
+    paintHostiles();
   }
   function downFoe(f) {
-    f.alive = false; f.running = false;
-    f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y0 + 10}) rotate(76)`);
+    f.alive = false; f.running = false; f.vx = 0; f.vy = 0;
+    f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y + 8}) rotate(76)`);
     f.g.setAttribute('opacity', '0.5');
   }
   function updateFoes(now) {
-    const t = now / 1000;
-    const heat = Math.min(1, Math.max(0, t - battle.tPlay) / 9);
+    const dt = foeStamp ? Math.min(0.05, (now - foeStamp) / 1000) : 0.016;
+    foeStamp = now;
+    const heat = Math.min(1, Math.max(0, now / 1000 - battle.tPlay) / 9);
     foes.forEach((f) => {
       if (!f.alive || !f.running) return;
-      const sp = f.base * (1 + heat * 2.1);
-      const w = f.span * (1 + heat * 0.45);
-      f.x = f.home + Math.sin(t * sp + f.phase) * w;
-      f.g.setAttribute('transform', `translate(${f.x.toFixed(1)} ${f.y0})`);
+      if (now >= f.until) planFoe(f, now);
+      const dx = f.gx - f.x, dy = f.gy - f.y;
+      const d = Math.hypot(dx, dy) || 1;
+      const maxV = (62 + heat * 150) * f.burst;
+      if (d < 10) { f.vx *= 0.86; f.vy *= 0.86; }
+      else {
+        const arrive = Math.min(1, d / 48);
+        f.vx += (((dx / d) * maxV * arrive) - f.vx) * Math.min(1, dt * 3.1);
+        f.vy += (((dy / d) * maxV * arrive) - f.vy) * Math.min(1, dt * 3.1);
+      }
+      foes.forEach((o) => {
+        if (o === f || !o.alive) return;
+        const sx = f.x - o.x, sy = f.y - o.y;
+        const sd = Math.hypot(sx, sy);
+        if (sd > 0 && sd < 42) { f.vx += (sx / sd) * 90 * dt; f.vy += (sy / sd) * 90 * dt; }
+      });
+      const nx = f.x + f.vx * dt, ny = f.y + f.vy * dt;
+      const p = clampBeach(nx, ny);
+      if (p.x !== nx) f.vx *= -0.35;
+      if (p.y !== ny) f.vy *= -0.35;
+      f.x = p.x; f.y = p.y;
+      if (Math.abs(f.vx) > 6) f.face = f.vx < 0 ? -1 : 1;
+      placeFoe(f);
     });
+    paintHostiles();
   }
   function resolveSplash(at) {
     if (!battle || battle.phase === 'out') return;
+    const w = worldFromScreen(at.x, at.y);
+    if (w) battle.blast = { x: w.x, y: w.y, t: performance.now() };
     foes.forEach((f) => {
       if (!f.alive) return;
-      const p = svgPoint(f.x, f.y0 - 26);
+      const p = svgPoint(f.x, f.y - 26);
       if (Math.hypot(p.x - at.x, p.y - at.y) <= SPLASH) downFoe(f);
     });
     if (battle.first) {
       battle.first = false;
       battle.phase = 'play';
       battle.tPlay = performance.now() / 1000;
-      foes.forEach((f) => { if (f.alive) f.running = true; });
+      const t = performance.now();
+      foes.forEach((f) => { if (f.alive) { f.running = true; f.until = 0; planFoe(f, t); } });
+    } else {
+      const t = performance.now();
+      foes.forEach((f) => { if (f.alive && f.running) planFoe(f, t); });
     }
+    paintHostiles();
     if (foes.every((f) => !f.alive)) finishEgg();
   }
   async function goCam(to, ms) {
