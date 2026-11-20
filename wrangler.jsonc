@@ -1,22 +1,14 @@
-// Cloudflare Workers config.
-// Serves this repo's static files, plus a small shared smile counter at /api/smiles (src/worker.js).
+// Cloudflare Workers config: serves this repo's static files (no server code).
 // Deployed by .github/workflows/deploy.yml on every push to main.
+// The shared smile counter in src/worker.js stays in the repo, but publishing it
+// requires a workers.dev subdomain this account does not have yet.
 {
   "name": "digital-beachhead",
-  "main": "src/worker.js",
   "compatibility_date": "2026-11-19",
-  "workers_dev": false,
-  "preview_urls": false,
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS",
-    "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*"]
+    "not_found_handling": "404-page"
   },
-  "durable_objects": {
-    "bindings": [{ "name": "SMILES", "class_name": "SmileCounter" }]
-  },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SmileCounter"] }],
   "routes": [
     { "pattern": "thedigitalbeachhead.com", "custom_domain": true },
     { "pattern": "www.thedigitalbeachhead.com", "custom_domain": true }
