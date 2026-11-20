@@ -297,3 +297,25 @@ footer a:hover { color: #b34a3a; }
   pointer-events: none;
 }
 body.skirmish { cursor: crosshair; }
+
+@media (hover: none), (max-width: 760px) {
+  .nameplate { display: none; }
+  .headname { display: none; }
+}
+.headname {
+  display: none;
+  position: fixed;
+  z-index: 4;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #2b2a24;
+  background: #f7f1e2;
+  border: 1px solid #39432a;
+  padding: 1px 5px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.scene, .trooper { touch-action: manipulation; }
