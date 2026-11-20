@@ -615,30 +615,37 @@
   const hostilesEl = $('hostiles');
   const dispatch = document.querySelector('.dispatch');
   const VB0 = { x: 0, y: 0, w: 1600, h: 900 };
-  const VB1 = { x: 820, y: 40, w: 1960, h: 1102 };
-  let cam = { ...VB0 };
+  const narrow = () => window.innerWidth < 760;
+  const restCam = () => narrow() ? { x: 640, y: 340, w: 960, h: 560 } : { ...VB0 };
+  const fightCam = () => {
+    if (!narrow()) return { x: 900, y: 20, w: 1880, h: 1100 };
+    const aspect = Math.max(0.45, window.innerWidth / window.innerHeight);
+    const h = 900;
+    const w = h * aspect;
+    return { x: 2090 - w * 0.5, y: 40, w, h };
+  };
+  let cam = restCam();
   let battle = null;
   let finishing = false;
   const SPLASH = 118;
 
-  const applyCam = () => beach.setAttribute('viewBox', `${cam.x.toFixed(1)} ${cam.y.toFixed(1)} ${cam.w.toFixed(1)} ${cam.h.toFixed(1)}`);
+  const applyCam = () => {
+    beach.setAttribute('preserveAspectRatio', narrow() ? 'xMidYMax meet' : 'xMidYMax slice');
+    beach.setAttribute('viewBox', `${cam.x.toFixed(1)} ${cam.y.toFixed(1)} ${cam.w.toFixed(1)} ${cam.h.toFixed(1)}`);
+  };
+  applyCam();
   function svgPoint(x, y) {
     const pt = beach.createSVGPoint();
     pt.x = x; pt.y = y;
     return pt.matrixTransform(beach.getScreenCTM());
   }
 
-  // ground beyond the original frame, so the pull-back has somewhere to go
-  mk('rect', { x: 1590, y: 0, width: 1400, height: 470, fill: '#aeb8b4' }, hostilesEl);
-  mk('rect', { x: 1590, y: 466, width: 1400, height: 250, fill: '#4f6b75' }, hostilesEl);
-  mk('path', { d: 'M1500 900 L1600 748 L3000 700 L3000 980 L1500 980 Z', fill: '#cbb892' }, hostilesEl);
-  mk('path', { d: 'M1760 760 C1960 688 2200 676 2460 712 L2460 790 C2180 760 1960 776 1760 820 Z', fill: '#b7a47a' }, hostilesEl);
   const hint = mk('text', {
-    x: 2080, y: 630, 'text-anchor': 'middle',
-    'font-family': 'Black Ops One, Impact, sans-serif', 'font-size': 26,
+    x: 2080, y: 400, 'text-anchor': 'middle',
+    'font-family': 'Black Ops One, Impact, sans-serif', 'font-size': 28,
     fill: '#f4efe2', stroke: '#2c2a24', 'stroke-width': 0.8,
   }, hostilesEl);
-  hint.textContent = 'CLICK TO FIRE';
+  hint.textContent = narrow() ? 'TAP TO FIRE' : 'CLICK TO FIRE';
 
   function makeFoe(x, y) {
     const g = mk('g', { transform: `translate(${x} ${y})` }, hostilesEl);
@@ -651,11 +658,11 @@
     mk('line', { x1: 2, y1: -20, x2: -24, y2: -26, stroke: '#2c2924', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, g);
     return { g, x, home: x, y0: y, alive: true, running: false, phase: rand(0, 6.2), base: rand(1.7, 2.4), span: rand(34, 64) };
   }
-  const foes = [1900, 1995, 2080, 2175, 2285].map((x, i) => makeFoe(x, 768 + (i % 2) * 6));
+  const foes = [1900, 1995, 2080, 2175, 2260].map((x, i) => makeFoe(x, 754 + (i % 2) * 4));
   const bags = mk('g', {}, hostilesEl);
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 22; i++) {
     mk('ellipse', {
-      cx: 1852 + i * 18, cy: 784 + (i % 2) * 5, rx: 12, ry: 6.5,
+      cx: 1860 + i * 20, cy: 768 + (i % 2) * 5, rx: 13, ry: 6.5,
       fill: i % 2 ? '#c6b08a' : '#ad9670', stroke: '#8d7756', 'stroke-width': 0.7,
     }, bags);
   }
@@ -714,9 +721,9 @@
     dispatch.classList.add('aside');
     document.body.classList.add('skirmish');
     resetFoes();
-    await goCam(VB1, quick(1200));
+    await goCam(fightCam(), quick(1200));
     while (M.busy) await wait(40);
-    const mid = svgPoint(2080, 742);
+    const mid = svgPoint(2080, 730);
     await fireMortar(mid, true);
   }
   async function finishEgg() {
@@ -724,24 +731,61 @@
     finishing = true;
     if (battle) battle.phase = 'out';
     await wait(quick(900));
-    await goCam(VB0, quick(1100));
+    await goCam(restCam(), quick(1100));
     dispatch.classList.remove('aside');
     document.body.classList.remove('skirmish');
     resetFoes();
     battle = null;
     finishing = false;
   }
-  spotter.g.addEventListener('click', (e) => {
+  const nameFor = [
+    [loader, 'Pvt Oki'],
+    [gunner, 'Pvt Sledge'],
+    [spotter, 'Cpt Rooney'],
+  ].map(([man, name]) => {
+    const el = document.createElement('div');
+    el.className = 'headname';
+    el.textContent = name;
+    document.body.appendChild(el);
+    return { man, el };
+  });
+  function placeNames() {
+    const show = !battle && window.matchMedia('(hover: none), (max-width: 760px)').matches;
+    nameFor.forEach(({ man, el }) => {
+      if (!show) { el.style.display = 'none'; return; }
+      const r = man.g.getBoundingClientRect();
+      if (r.width < 2 || r.bottom < 0 || r.top > window.innerHeight) { el.style.display = 'none'; return; }
+      el.style.display = 'block';
+      el.style.left = (r.left + r.width / 2) + 'px';
+      el.style.top = (r.top + 2) + 'px';
+    });
+  }
+  let aimAt = 0;
+  function aimFire(x, y) {
+    const now = performance.now();
+    if (now - aimAt < 350) return;
+    aimAt = now;
+    fireMortar({ x, y }, true);
+  }
+  spotter.g.addEventListener('pointerdown', (e) => {
     e.stopPropagation();
     e.preventDefault();
     startEgg();
   });
-  window.addEventListener('click', (e) => {
-    if (!battle || battle.phase !== 'play') return;
-    const t = e.target;
-    if (t.closest && t.closest('.dispatch, .trooper, #fire')) return;
-    fireMortar({ x: e.clientX, y: e.clientY }, true);
+  window.addEventListener('pointerdown', (e) => {
+    if (e.target.closest && e.target.closest('#fire, .dispatch a, button, a')) return;
+    if (battle) {
+      if (battle.phase !== 'play') return;
+      if (e.target.closest && e.target.closest('.trooper')) return;
+      aimFire(e.clientX, e.clientY);
+      return;
+    }
+    const r = spotter.g.getBoundingClientRect();
+    if (r.width < 2) return;
+    const cx = r.left + r.width / 2, cy = r.top + r.height * 0.4;
+    if (Math.hypot(e.clientX - cx, e.clientY - cy) < Math.max(44, r.width * 0.8)) startEgg();
   });
+  window.addEventListener('resize', () => { if (!battle) { cam = restCam(); applyCam(); } });
 
   // ---------- main loop ----------
   const t0 = performance.now();
@@ -754,6 +798,7 @@
     scene((now - t0) / 1000 + skip);
     updateFx(dt, now);
     if (battle && battle.phase === 'play') updateFoes(now);
+    placeNames();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
