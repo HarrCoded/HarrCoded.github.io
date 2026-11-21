@@ -1,7 +1,8 @@
 // The Digital Beachhead: shared "Smiles caused" counter.
 //
 //   GET  /api/smiles  -> { "smiles": <total> }
-//   POST /api/smiles  -> adds 1, returns the new total
+//   POST /api/smiles  -> adds 1 (unless throttled), returns
+//                        { "smiles": <new total>, "counted": true|false }
 //
 // Everything else is served from the static site files.
 // The total lives in one Durable Object, which handles one request at a time,
@@ -25,13 +26,14 @@ export class SmileCounter extends DurableObject {
     const now = Date.now();
     const last = this.lastHit.get(visitor) || 0;
     let smiles = await this.total();
-    if (now - last >= MIN_GAP_MS) {
+    const counted = now - last >= MIN_GAP_MS;
+    if (counted) {
       smiles += 1;
       await this.ctx.storage.put('smiles', smiles);
       this.lastHit.set(visitor, now);
       if (this.lastHit.size > 5000) this.lastHit.clear();
     }
-    return smiles;
+    return { smiles, counted };
   }
 }
 
@@ -50,7 +52,7 @@ export default {
       if (request.method === 'GET') return json({ smiles: await counter.total() });
       if (request.method === 'POST') {
         const visitor = request.headers.get('cf-connecting-ip') || 'unknown';
-        return json({ smiles: await counter.add(visitor) });
+        return json(await counter.add(visitor));
       }
       return json({ error: 'method not allowed' }, 405);
     }

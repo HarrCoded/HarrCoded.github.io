@@ -42,7 +42,10 @@
   // ---------- smile counter ----------
   // The shared all-time total lives on the server (/api/smiles, see src/worker.js).
   // This browser's own count is kept locally for the "by you" note and the stamp.
-  const KEY = 'beachhead.smiles';
+  // It only counts smiles the server accepted, so it can never exceed the total.
+  // (v2: the old 'beachhead.smiles' count predated the shared total, so it was retired.)
+  const KEY = 'beachhead.smiles.v2';
+  try { localStorage.removeItem('beachhead.smiles'); } catch (e) { /* ignore */ }
   const API = '/api/smiles';
   const mineEl = $('smilesMine');
   let mine = 0, total = null;
@@ -375,12 +378,25 @@
   }
 
   function scoreSmile() {
-    mine += 1;
-    if (total !== null) total += 1; // show it right away; the server's answer corrects it
-    showSmiles();
-    try { localStorage.setItem(KEY, String(mine)); } catch (e) { /* ignore */ }
+    if (total !== null) { total += 1; showSmiles(); } // show it right away; the server's answer corrects it
     stamp.classList.add('on');
-    syncTotal('POST');
+    postSmile();
+  }
+
+  // Count the smile as "yours" only if the server counted it (it ignores
+  // clicks less than 0.4 s apart from the same visitor).
+  async function postSmile() {
+    try {
+      const res = await fetch(API, { method: 'POST', cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.counted === true) {
+        mine += 1;
+        try { localStorage.setItem(KEY, String(mine)); } catch (e) { /* ignore */ }
+      }
+      if (typeof data.smiles === 'number') total = data.smiles;
+      showSmiles();
+    } catch (e) { /* offline or no server: nothing is counted */ }
   }
 
   // ---------- mortar squad ----------
